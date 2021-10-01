@@ -1,9 +1,7 @@
-import re
-from flask import Flask, render_template
-from flask.helpers import url_for
+from flask import Flask, render_template, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
 from translator import Translate
 
 app = Flask(__name__)
@@ -13,7 +11,7 @@ app.config['SECRET_KEY'] = 'any secret string'
 
 class MyForm(FlaskForm):
     string_text = StringField(
-        label="Add a string text including spaces, commas, or question marks. Other special characters are prohibited:", validators=[DataRequired()])
+        label="Add some text including letters, numbers, spaces, commas, or question marks. Other special characters are prohibited:", validators=[DataRequired(), Regexp(regex="^[a-zA-Z0-9 ?.,]*$", message="Provide a text including letters, numbers, spaces, commas, or question marks. Other special characters are prohibited!")])
     morse_text = StringField(label="Morse text:")
     submit = SubmitField(label="Submit")
     reset = SubmitField(label="Reset")
@@ -31,7 +29,11 @@ def index():
         elif form.reset.data:
             form["string_text"].data = ""
             form["morse_text"].data = ""
-
+    elif form.reset.data:
+            form["string_text"].data = ""
+            form["morse_text"].data = ""
+    else:
+        flash(form.string_text.errors)
     return render_template("index.html", form=form)
 
 

@@ -3,7 +3,7 @@ from morse_dict import morse_dict
 
 class Translate:
     def __init__(self, alpha_input):
-        self.alpha_input = alpha_input
+        self.alpha_input = alpha_input.lower()
         self.morse_dict = morse_dict
 
     def print_morse(self):

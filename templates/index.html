@@ -1,12 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/style.css') }}"
+    />
 
     <title>Text to Morse Code Converter</title>
   </head>
@@ -18,38 +31,73 @@
       </div>
     </div>
 
-  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-          <form method="POST" action="{{ url_for('index') }}">
-            {{ form.csrf_token }}
-            <div class="mb-3">
-            <fieldset class="form-field">
-                {{ form.string_text.label(class="form-label") }}
-                {{ form.string_text(class_="form-control") }}
-            </fieldset>
-            </div>
-            <div class="mb-3">
-            <fieldset class="form-field">
-                {{ form.morse_text.label(class="form-label") }}
-                {{ form.morse_text(class_="form-control") }}
-            </fieldset>
-            </div>
-            {{ form.submit(class_="btn btn-primary m-auto") }}
-            {{ form.reset(class_="btn btn-danger m-auto") }}
-          </form>
-        </div>
-        
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages[0]%}
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <div class="alert alert-danger" role="alert">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+      </div>
+    </div>
+    {% endfor %} {% endif %} {% endwith %}
 
-  <div class="container fixed-bottom">
-    <footer class="py-3 my-4">
-      <p class="text-center text-muted">Created by <a href="http://github.com/mclbdn" target="_blank">@mclbdn</a></p>
-    </footer>
-  </div>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+      <form method="POST" action="{{ url_for('index') }}">
+        {{ form.csrf_token }}
+        <div class="mb-3">
+          <fieldset class="form-field">
+            {{ form.string_text.label(class="form-label") }} {{
+            form.string_text(class_="form-control") }}
+          </fieldset>
+        </div>
+        <div class="mb-3">
+          <fieldset class="form-field">
+            {{ form.morse_text.label(class="form-label") }} {{
+            form.morse_text(class_="form-control") }}
+          </fieldset>
+        </div>
+        {{ form.submit(class_="btn btn-primary m-auto") }} {{
+        form.reset(class_="btn btn-danger m-auto") }}
+      </form>
+    </div>
+
+    <div class="container fixed-bottom">
+      <footer class="py-3 my-4">
+        <p class="text-center text-muted">
+          Created by
+          <a href="http://github.com/mclbdn" target="_blank">@mclbdn</a>
+        </p>
+      </footer>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+      integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+      integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.setTimeout(function () {
+        $(".alert").fadeTo(500, 0);
+      }, 4000);
+    </script>
   </body>
 </html>
-

@@ -1,88 +1,39 @@
 import re
 from flask import Flask, render_template
+from flask.helpers import url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+from translator import Translate
 
 app = Flask(__name__)
 
-# morse_dict = {
-#     # Letters
-#     "a": ".- ",
-#     "b": "-... ",
-#     "c": "-.-. ",
-#     "d": "-.. ",
-#     "e": ". ",
-#     "f": "..-. ",
-#     "g": "--. ",
-#     "h": ".... ",
-#     "i": ".. ",
-#     "j": ".--- ",
-#     "k": "-.- ",
-#     "l": ".-.. ",
-#     "m": "-- ",
-#     "n": "-. ",
-#     "o": "--- ",
-#     "p": ".--. ",
-#     "q": "--.- ",
-#     "r": ".-. ",
-#     "s": "... ",
-#     "t": "- ",
-#     "u": "..- ",
-#     "v": "...- ",
-#     "w": ".-- ",
-#     "x": "-..- ",
-#     "y": "-.-- ",
-#     "z": "--.. ",
-#     # Numbers
-#     "1": ".---- ",
-#     "2": "..--- ",
-#     "3": "...-- ",
-#     "4": "....- ",
-#     "5": "..... ",
-#     "6": "-... ",
-#     "7": "--... ",
-#     "8": "---.. ",
-#     "9": "----. ",
-#     "0": "----- ",
-#     # Symbols
-#     "?": "..--.. ",
-#     ".": "._._._ ",
-#     ",": "--..-- ",
-#     # Space
-#     " ": "/ "
-# }
+app.config['SECRET_KEY'] = 'any secret string'
 
 
-# def get_input():
-#     # replace() is necessary because latter isalnum() doesn't accept spaces
-#     return input("Please enter a valid text (numbers/letters/space/?/,): ").lower()
+class MyForm(FlaskForm):
+    string_text = StringField(
+        label="Add a string text including spaces, commas, or question marks. Other special characters are prohibited:", validators=[DataRequired()])
+    morse_text = StringField(label="Morse text:")
+    submit = SubmitField(label="Submit")
+    reset = SubmitField(label="Reset")
 
 
-# def print_morse(alpha_input):
-#     morse_code_output = ""
-
-#     for letter in alpha_input:
-#         morse_code_output += morse_dict[letter]
-
-#     print(f"\n{morse_code_output}\n")
-
-#     want_to_continue = input("Do you wish to translate more text? ('yes'/'no'): ").lower()
-
-#     if want_to_continue == "yes":
-#         user_input = get_input()
-#         print_morse(user_input)
-
-
-# while True:
-#     user_input = get_input()
-#     if re.match(r"^[a-zA-Z0-9 ?.,]*$", user_input):
-#         print_morse(user_input)
-#         break
-#     else:
-#         print("This is not a valid text.")
-#         continue
-
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    form = MyForm()
+    if form.validate_on_submit():
+        if form.submit.data:
+            string_text = form["string_text"].data
+            translate = Translate(string_text)
+            morse_code = translate.print_morse()
+            form["morse_text"].data = morse_code
+        elif form.reset.data:
+            form["string_text"].data = ""
+            form["morse_text"].data = ""
+
+    return render_template("index.html", form=form)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

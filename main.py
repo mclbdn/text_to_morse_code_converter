@@ -3,16 +3,17 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Regexp
 from translator import Translate
+import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'any secret string'
+app.config['SECRET_KEY'] = os.environ.get("MY_SECRET_KEY")
 
 
 class MyForm(FlaskForm):
     string_text = StringField(
         label="Add some text including letters, numbers, spaces, commas, or question marks. Other special characters are prohibited:", validators=[DataRequired(), Regexp(regex="^[a-zA-Z0-9 ?.,]*$", message="Provide a text including letters, numbers, spaces, commas, or question marks. Other special characters are prohibited!")])
-    morse_text = StringField(label="Morse text:")
+    morse_text = StringField(label="Morse code:")
     submit = SubmitField(label="Submit")
     reset = SubmitField(label="Reset")
 
